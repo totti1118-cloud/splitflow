@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SplitFlow</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#141b31; --card2:#1a2340; --text:#f7f8ff;
+      --muted:#a8b0c7; --accent:#7c9cff; --accent2:#56e0c2; --danger:#ff7b8a;
+      --line:rgba(255,255,255,.09); --shadow:0 18px 50px rgba(0,0,0,.28);
+      --r:20px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;background:
+      radial-gradient(900px 500px at 10% -5%,rgba(124,156,255,.22),transparent 60%),
+      radial-gradient(700px 500px at 100% 5%,rgba(86,224,194,.12),transparent 58%),
+      var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Sans","Noto Sans JP",sans-serif}
+    body{min-height:100vh;padding-bottom:calc(94px + env(safe-area-inset-bottom))}
+    .wrap{max-width:780px;margin:0 auto;padding:18px 16px}
+    .hero{padding:16px 4px 10px}
+    .eyebrow{font-size:12px;color:var(--accent2);font-weight:800;letter-spacing:.12em}
+    h1{font-size:34px;margin:4px 0 3px;letter-spacing:-.04em}
+    .sub{color:var(--muted);font-size:14px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+      border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0;box-shadow:var(--shadow);backdrop-filter:blur(16px)}
+    .card h2{font-size:18px;margin:0 0 12px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select,button{font:inherit}
+    input,select{width:100%;border:1px solid var(--line);border-radius:14px;background:#0f162b;color:var(--text);padding:13px 14px;outline:none}
+    input:focus,select:focus{border-color:rgba(124,156,255,.65);box-shadow:0 0 0 3px rgba(124,156,255,.12)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn{border:0;border-radius:14px;padding:13px 15px;background:var(--card2);color:var(--text);font-weight:800;cursor:pointer;touch-action:manipulation}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),#9c78ff)}
+    .btn.good{background:linear-gradient(135deg,#39cdb0,#65e8ca);color:#06120f}
+    .btn.danger{background:rgba(255,123,138,.13);color:#ffb2bc;border:1px solid rgba(255,123,138,.25)}
+    .btn.small{padding:9px 11px;border-radius:12px;font-size:13px}
+    .memberchips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+    .chip{display:inline-flex;align-items:center;gap:8px;background:#11182d;border:1px solid var(--line);padding:9px 11px;border-radius:999px}
+    .avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#061016}
+    .chip button{border:0;background:transparent;color:#ff9fab;font-size:18px;line-height:1;padding:0;cursor:pointer}
+    .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .seg button{background:#11182d;border:1px solid var(--line);color:var(--muted);border-radius:13px;padding:10px 8px;font-size:13px;font-weight:800}
+    .seg button.active{color:white;background:rgba(124,156,255,.16);border-color:rgba(124,156,255,.45)}
+    .splitbox{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:16px;background:rgba(0,0,0,.10)}
+    .personline{display:grid;grid-template-columns:1fr 88px;gap:10px;align-items:center;margin:8px 0}
+    .personcheck{display:flex;align-items:center;gap:9px}
+    .personcheck input{width:20px;height:20px}
+    .item{border-top:1px solid var(--line);padding:13px 0}
+    .item:first-child{border-top:0}
+    .itemtop{display:flex;justify-content:space-between;gap:10px}
+    .itemname{font-weight:900}
+    .itemmeta{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.5}
+    .money{font-weight:900;font-variant-numeric:tabular-nums}
+    .summarygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .stat{background:#10172b;border:1px solid var(--line);border-radius:15px;padding:12px}
+    .stat .n{font-size:20px;font-weight:900;margin-top:4px}
+    .settle{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px;border-radius:15px;background:#10172b;border:1px solid var(--line);margin:8px 0}
+    .arrow{color:var(--accent2);font-weight:900}
+    .muted{color:var(--muted)}
+    .empty{padding:18px 8px;color:var(--muted);text-align:center}
+    .bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(8,13,27,.84);backdrop-filter:blur(20px);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));z-index:20}
+    .nav{max-width:780px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .nav button{border:0;border-radius:14px;background:transparent;color:var(--muted);padding:10px 6px;font-weight:800;touch-action:manipulation}
+    .nav button.active{background:rgba(124,156,255,.14);color:#fff}
+    .page{display:none}.page.active{display:block}
+    .notice{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+    .toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#eef2ff;color:#11182d;padding:10px 14px;border-radius:999px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:40}
+    .toast.show{opacity:1}
+    @media(max-width:520px){.row{grid-template-columns:1fr}.summarygrid{grid-template-columns:1fr}.hero h1{font-size:30px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">SMART SPLIT</div>
+    <h1>SplitFlow</h1>
+    <div class="sub">誰が何を買って、誰がどれだけ負担するか。最後は送金だけ。</div>
+  </div>
+
+  <section id="page-members" class="page active">
+    <div class="card">
+      <h2>参加者</h2>
+      <div class="row">
+        <div>
+          <label>名前</label>
+          <input id="memberName" placeholder="例：太郎" maxlength="20">
+        </div>
+        <div style="display:flex;align-items:end">
+          <button id="addMemberBtn" class="btn primary" style="width:100%">参加者を追加</button>
+        </div>
+      </div>
+      <div id="memberList" class="memberchips"></div>
+      <div class="notice">参加者を削除すると、その人が関係する商品も自動的に調整されます。</div>
+    </div>
+  </section>
+
+  <section id="page-items" class="page">
+    <div class="card">
+      <h2>商品を追加</h2>
+      <div class="row">
+        <div>
+          <label>商品名</label>
+          <input id="itemName" placeholder="例：ビール">
+        </div>
+        <div>
+          <label>個数</label>
+          <input id="qty" type="number" inputmode="decimal" min="0.01" step="0.01" value="1">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>合計金額</label>
+          <input id="amount" type="number" inputmode="numeric" min="0" step="1" placeholder="1200">
+        </div>
+        <div>
+          <label>支払った人</label>
+          <select id="payer"></select>
+        </div>
+      </div>
+
+      <label>負担方法</label>
+      <div class="seg" id="modeSeg">
+        <button data-mode="all" class="active">全員均等</button>
+        <button data-mode="selected">選択均等</button>
+        <button data-mode="ratio">比率</button>
+      </div>
+      <div id="splitBox" class="splitbox"></div>
+      <button id="addItemBtn" class="btn good" style="width:100%;margin-top:12px">この商品を追加</button>
+    </div>
+
+    <div class="card">
+      <h2>登録済みの商品</h2>
+      <div id="itemList"></div>
+    </div>
+  </section>
+
+  <section id="page-settle" class="page">
+    <div class="card">
+      <h2>精算サマリー</h2>
+      <div id="stats"></div>
+    </div>
+    <div class="card">
+      <h2>誰が誰に払う？</h2>
+      <div id="settlements"></div>
+    </div>
+    <div class="card">
+      <h2>各人の内訳</h2>
+      <div id="balances"></div>
+    </div>
+    <button id="resetBtn" class="btn danger" style="width:100%">すべてリセット</button>
+  </section>
+</div>
+
+<div class="bottom">
+  <div class="nav">
+    <button data-page="members" class="active">👥<br>参加者</button>
+    <button data-page="items">🧾<br>買い物</button>
+    <button data-page="settle">💸<br>精算</button>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  const KEY="splitflow_v2";
+  let state = {members:[], items:[], mode:"all"};
+
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString("ja-JP")+"円";
+  const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+  function toast(msg){
+    const t=$("toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),1500);
+  }
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  function load(){
+    try{
+      const s=JSON.parse(localStorage.getItem(KEY));
+      if(s && Array.isArray(s.members) && Array.isArray(s.items)) state={...state,...s};
+    }catch(e){}
+  }
+
+  function navTo(page){
+    document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+    $("page-"+page).classList.add("active");
+    document.querySelector('.nav button[data-page="'+page+'"]').classList.add("active");
+    if(page==="settle") renderSettle();
+  }
+
+  function renderMembers(){
+    const box=$("memberList"); box.innerHTML="";
+    if(!state.members.length){ box.innerHTML='<div class="empty">まだ参加者がいません</div>'; }
+    state.members.forEach(m=>{
+      const d=document.createElement("div"); d.className="chip";
+      d.innerHTML='<span class="avatar">'+escapeHtml(m.name.slice(0,1))+'</span><span>'+escapeHtml(m.name)+'</span>';
+      const b=document.createElement("button"); b.type="button"; b.textContent="×";
+      b.addEventListener("click",()=>removeMember(m.id));
+      d.appendChild(b); box.appendChild(d);
+    });
+    renderPayer();
+    renderSplit();
+  }
+
+  function renderPayer(){
+    const p=$("payer"); p.innerHTML="";
+    if(!state.members.length){
+      const o=document.createElement("option"); o.textContent="参加者を先に登録"; o.value=""; p.appendChild(o); return;
+    }
+    state.members.forEach(m=>{
+      const o=document.createElement("option"); o.value=m.id; o.textContent=m.name; p.appendChild(o);
+    });
+  }
+
+  function renderSplit(){
+    const box=$("splitBox"); box.innerHTML="";
+    if(!state.members.length){ box.innerHTML='<div class="empty">参加者を登録すると設定できます</div>'; return; }
+
+    if(state.mode==="all"){
+      box.innerHTML='<div class="muted">参加者全員で均等に負担します。</div>';
+      return;
+    }
+    state.members.forEach(m=>{
+      const line=document.createElement("div"); line.className="personline";
+      const left=document.createElement("label"); left.className="personcheck"; left.style.margin="0";
+      const c=document.createElement("input"); c.type="checkbox"; c.checked=true; c.dataset.member=m.id;
+      const s=document.createElement("span"); s.textContent=m.name; left.append(c,s); line.appendChild(left);
+      if(state.mode==="ratio"){
+        const inp=document.createElement("input"); inp.type="number"; inp.inputMode="decimal"; inp.min="0"; inp.step="0.1"; inp.value="1"; inp.dataset.ratio=m.id;
+        line.appendChild(inp);
+      }else{
+        const tag=document.createElement("div"); tag.className="muted"; tag.textContent="参加"; line.appendChild(tag);
+      }
+      box.appendChild(line);
+    });
+    if(state.mode==="ratio"){
+      const n=document.createElement("div"); n.className="notice";
+      n.textContent="例：2・1・1 と入力すると 50%・25%・25% になります。チェックを外した人は負担しません。";
+      box.appendChild(n);
+    }
+  }
+
+  function renderItems(){
+    const box=$("itemList"); box.innerHTML="";
+    if(!state.items.length){ box.innerHTML='<div class="empty">商品はまだありません</div>'; return; }
+    state.items.slice().reverse().forEach(it=>{
+      const payer=state.members.find(m=>m.id===it.payerId);
+      const shares=Object.entries(it.shares).filter(([,v])=>v>0).map(([id,v])=>{
+        const m=state.members.find(x=>x.id===id);
+        return m ? m.name+" "+Math.round(v*1000)/10+"%" : "";
+      }).filter(Boolean).join(" / ");
+      const d=document.createElement("div"); d.className="item";
+      d.innerHTML='<div class="itemtop"><div><div class="itemname">'+escapeHtml(it.name)+'</div><div class="itemmeta">個数 '+it.qty+' ・ 支払 '+escapeHtml(payer?payer.name:"不明")+'<br>'+escapeHtml(shares)+'</div></div><div style="text-align:right"><div class="money">'+fmt(it.amount)+'</div></div></div>';
+      const b=document.createElement("button"); b.type="button"; b.className="btn small danger"; b.textContent="削除"; b.style.marginTop="10px";
+      b.addEventListener("click",()=>{state.items=state.items.filter(x=>x.id!==it.id);save();renderItems();});
+      d.appendChild(b); box.appendChild(d);
+    });
+  }
+
+  function addMember(){
+    const name=$("memberName").value.trim();
+    if(!name){toast("名前を入力してください");return;}
+    if(state.members.some(m=>m.name===name)){toast("同じ名前があります");return;}
+    state.members.push({id:uid(),name}); $("memberName").value=""; save(); renderMembers(); renderItems(); toast("参加者を追加しました");
+  }
+
+  function removeMember(id){
+    const m=state.members.find(x=>x.id===id);
+    if(!m)return;
+    if(!confirm(m.name+"さんを削除しますか？"))return;
+    state.members=state.members.filter(x=>x.id!==id);
+    state.items=state.items.filter(it=>it.payerId!==id).map(it=>{
+      const sh={...it.shares}; delete sh[id];
+      const total=Object.values(sh).reduce((a,b)=>a+b,0);
+      if(total>0) Object.keys(sh).forEach(k=>sh[k]/=total);
+      return {...it,shares:sh};
+    });
+    save(); renderMembers(); renderItems();
+  }
+
+  function addItem(){
+    if(state.members.length<1){toast("参加者を先に登録してください");navTo("members");return;}
+    const name=$("itemName").value.trim() || "商品";
+    const qty=Number($("qty").value);
+    const amount=Number($("amount").value);
+    const payerId=$("payer").value;
+    if(!(qty>0) || !(amount>=0) || !payerId){toast("入力内容を確認してください");return;}
+
+    let shares={};
+    if(state.mode==="all"){
+      const v=1/state.members.length; state.members.forEach(m=>shares[m.id]=v);
+    }else{
+      const checks=[...document.querySelectorAll('#splitBox input[type="checkbox"]')];
+      const ids=checks.filter(c=>c.checked).map(c=>c.dataset.member);
+      if(!ids.length){toast("負担する人を選んでください");return;}
+      if(state.mode==="selected"){
+        const v=1/ids.length; ids.forEach(id=>shares[id]=v);
+      }else{
+        let total=0; const ratios={};
+        ids.forEach(id=>{
+          const el=document.querySelector('#splitBox input[data-ratio="'+id+'"]');
+          const r=Math.max(0,Number(el?el.value:0)); ratios[id]=r; total+=r;
+        });
+        if(total<=0){toast("比率を1以上で入力してください");return;}
+        ids.forEach(id=>shares[id]=ratios[id]/total);
+      }
+    }
+
+    state.items.push({id:uid(),name,qty,amount,payerId,shares});
+    $("itemName").value=""; $("qty").value="1"; $("amount").value="";
+    save(); renderItems(); toast("商品を追加しました");
+  }
+
+  function calc(){
+    const data={};
+    state.members.forEach(m=>data[m.id]={name:m.name,paid:0,owed:0,balance:0});
+    let total=0;
+    state.items.forEach(it=>{
+      total+=it.amount;
+      if(data[it.payerId]) data[it.payerId].paid+=it.amount;
+      Object.entries(it.shares).forEach(([id,share])=>{ if(data[id]) data[id].owed+=it.amount*share; });
+    });
+    Object.values(data).forEach(x=>x.balance=x.paid-x.owed);
+
+    const creditors=[], debtors=[];
+    Object.entries(data).forEach(([id,x])=>{
+      const b=Math.round(x.balance);
+      if(b>0) creditors.push({id,name:x.name,amt:b});
+      if(b<0) debtors.push({id,name:x.name,amt:-b});
+    });
+    const settlements=[]; let i=0,j=0;
+    while(i<debtors.length && j<creditors.length){
+      const v=Math.min(debtors[i].amt,creditors[j].amt);
+      if(v>0) settlements.push({from:debtors[i].name,to:creditors[j].name,amount:v});
+      debtors[i].amt-=v; creditors[j].amt-=v;
+      if(debtors[i].amt===0)i++; if(creditors[j].amt===0)j++;
+    }
+    return {data,total,settlements};
+  }
+
+  function renderSettle(){
+    const {data,total,settlements}=calc();
+    const stats=$("stats");
+    stats.innerHTML='<div class="summarygrid"><div class="stat"><div class="muted">参加者</div><div class="n">'+state.members.length+'人</div></div><div class="stat"><div class="muted">商品数</div><div class="n">'+state.items.length+'件</div></div><div class="stat"><div class="muted">合計</div><div class="n">'+fmt(total)+'</div></div></div>';
+
+    const s=$("settlements"); s.innerHTML="";
+    if(!settlements.length){ s.innerHTML='<div class="empty">'+(state.items.length?"精算は不要です":"商品を登録すると精算結果が表示されます")+'</div>'; }
+    settlements.forEach(x=>{
+      const d=document.createElement("div"); d.className="settle";
+      d.innerHTML='<div><strong>'+escapeHtml(x.from)+'</strong> <span class="arrow">→</span> <strong>'+escapeHtml(x.to)+'</strong></div><div class="money">'+fmt(x.amount)+'</div>';
+      s.appendChild(d);
+    });
+
+    const b=$("balances"); b.innerHTML="";
+    Object.values(data).forEach(x=>{
+      const d=document.createElement("div"); d.className="item";
+      const bal=Math.round(x.balance);
+      d.innerHTML='<div class="itemtop"><div><div class="itemname">'+escapeHtml(x.name)+'</div><div class="itemmeta">支払 '+fmt(x.paid)+' / 本来の負担 '+fmt(x.owed)+'</div></div><div class="money">'+(bal>=0?"+":"")+fmt(bal)+'</div></div>';
+      b.appendChild(d);
+    });
+    if(!state.members.length) b.innerHTML='<div class="empty">参加者がいません</div>';
+  }
+
+  function resetAll(){
+    if(!confirm("すべてのデータを削除しますか？"))return;
+    state={members:[],items:[],mode:"all"}; save(); renderMembers(); renderItems(); renderSettle(); navTo("members"); toast("リセットしました");
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    load();
+    document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>navTo(b.dataset.page)));
+    $("addMemberBtn").addEventListener("click",addMember);
+    $("memberName").addEventListener("keydown",e=>{if(e.key==="Enter")addMember();});
+    $("addItemBtn").addEventListener("click",addItem);
+    $("resetBtn").addEventListener("click",resetAll);
+    document.querySelectorAll("#modeSeg button").forEach(b=>b.addEventListener("click",()=>{
+      state.mode=b.dataset.mode;
+      document.querySelectorAll("#modeSeg button").forEach(x=>x.classList.toggle("active",x===b));
+      renderSplit();
+    }));
+    renderMembers(); renderItems(); renderSettle();
+    const modeBtn=document.querySelector('#modeSeg button[data-mode="'+state.mode+'"]');
+    if(modeBtn){document.querySelectorAll("#modeSeg button").forEach(x=>x.classList.toggle("active",x===modeBtn));}
+  });
+})();
+</script>
+</body>
+</html>
